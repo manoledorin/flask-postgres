@@ -1,0 +1,26 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Compose
+        run: |
+          docker-compose up -d --build
+          # așteptăm puțin ca DB să fie gata
+          sleep 15
+          docker-compose run web python -m unittest test_app.py
+
+      - name: Tear down
+        if: always()
+        run: docker-compose down
