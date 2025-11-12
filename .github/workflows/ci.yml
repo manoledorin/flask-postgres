@@ -7,20 +7,26 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Docker Compose
-        run: |
-          docker-compose up -d --build
-          # așteptăm puțin ca DB să fie gata
-          sleep 15
-          docker-compose run web python -m unittest test_app.py
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
 
-      - name: Tear down
-        if: always()
-        run: docker-compose down
+    - name: Build and run containers
+      run: |
+        docker-compose up -d
+        docker-compose ps
+
+    - name: Run tests
+      run: |
+        docker-compose exec -T web pytest tests/test_app.py
+
+    - name: Stop containers
+      run: docker-compose down
