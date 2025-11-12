@@ -1,10 +1,10 @@
-version: '3.8'
-
 services:
   web:
     build: .
     ports:
       - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://devopsuser:devopspass@db:5432/devopsdb
     depends_on:
       - db
 
@@ -14,3 +14,5 @@ services:
       POSTGRES_DB: devopsdb
       POSTGRES_USER: devopsuser
       POSTGRES_PASSWORD: devopspass
+    ports:
+      - "5432:5432"
