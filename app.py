@@ -1,17 +1,14 @@
-from flask import Flask
+import os
 import psycopg2
+from flask import Flask
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
     try:
-        conn = psycopg2.connect(
-            host="db",
-            database="devopsdb",
-            user="devopsuser",
-            password="devopspass"
-        )
+        db_url = os.environ["DATABASE_URL"]
+        conn = psycopg2.connect(db_url)
         return "Conexiune reușită la PostgreSQL!"
     except Exception as e:
         return f"Eroare la conectare: {e}"
